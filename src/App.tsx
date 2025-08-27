@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { Sidebar } from './components/Sidebar';
+import { OpenWebUISidebar } from './components/OpenWebUISidebar';
 import { ChatMessage } from './components/ChatMessage';
-import { ChatInput } from './components/ChatInput';
-import { EmptyState } from './components/EmptyState';
+import { OpenWebUIChatInput } from './components/OpenWebUIChatInput';
+import { OpenWebUIEmptyState } from './components/OpenWebUIEmptyState';
+import { OpenWebUIHeader } from './components/OpenWebUIHeader';
 import { useChat } from './hooks/useChat';
 
 function App() {
@@ -29,9 +30,9 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <Sidebar
+      <OpenWebUISidebar
         sessions={sessions}
         currentSessionId={currentSessionId}
         onNewSession={createNewSession}
@@ -40,20 +41,18 @@ function App() {
       />
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative">
+        {/* Header */}
+        <OpenWebUIHeader />
+        
         {currentSession ? (
           <>
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto bg-white">
+            <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-800">
               {currentSession.messages.length === 0 ? (
-                <div className="h-full flex items-center justify-center">
-                  <div className="text-center text-gray-500">
-                    <p className="text-lg mb-2">Conversation démarrée</p>
-                    <p className="text-sm">Tapez votre premier message ci-dessous</p>
-                  </div>
-                </div>
+                <OpenWebUIEmptyState onStartChat={handleStartChat} />
               ) : (
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-5xl mx-auto px-4 py-4">
                   {currentSession.messages.map((message) => (
                     <ChatMessage key={message.id} message={message} />
                   ))}
@@ -63,10 +62,10 @@ function App() {
             </div>
 
             {/* Input */}
-            <ChatInput onSendMessage={sendMessage} isLoading={isLoading} />
+            <OpenWebUIChatInput onSendMessage={sendMessage} isLoading={isLoading} />
           </>
         ) : (
-          <EmptyState onStartChat={handleStartChat} />
+          <OpenWebUIEmptyState onStartChat={handleStartChat} />
         )}
       </div>
     </div>

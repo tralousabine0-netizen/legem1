@@ -1,5 +1,5 @@
 import React from 'react';
-import { Copy, User, Bot, AlertCircle } from 'lucide-react';
+import { Copy, User, Bot, AlertCircle, ThumbsUp, ThumbsDown, RotateCcw } from 'lucide-react';
 import { ChatMessage as ChatMessageType } from '../types/chat';
 import { cn } from '../utils/cn';
 
@@ -25,54 +25,79 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   return (
     <div className={cn(
-      "group flex space-x-4 p-4 hover:bg-gray-50 transition-colors",
-      message.isError && "bg-red-50 hover:bg-red-100"
+      "group flex space-x-4 p-6 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors",
+      message.isError && "bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30"
     )}>
       {/* Avatar */}
       <div className={cn(
-        "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
+        "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center",
         message.role === 'user' 
-          ? "bg-blue-600 text-white" 
+          ? "bg-gradient-to-br from-blue-500 to-purple-600 text-white" 
           : message.isError
             ? "bg-red-600 text-white"
-            : "bg-gray-600 text-white"
+            : "bg-gradient-to-br from-gray-600 to-gray-700 text-white"
       )}>
         {message.role === 'user' ? (
-          <User className="w-4 h-4" />
+          <User className="w-5 h-5" />
         ) : message.isError ? (
-          <AlertCircle className="w-4 h-4" />
+          <AlertCircle className="w-5 h-5" />
         ) : (
-          <Bot className="w-4 h-4" />
+          <Bot className="w-5 h-5" />
         )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center space-x-2 mb-1">
-          <span className="text-sm font-medium text-gray-900">
-            {message.role === 'user' ? 'Vous' : 'Assistant'}
+        <div className="flex items-center space-x-2 mb-2">
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+            {message.role === 'user' ? 'You' : 'Assistant'}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
             {formatTime(message.timestamp)}
           </span>
         </div>
         
         <div className={cn(
-          "prose prose-sm max-w-none",
-          message.isError && "text-red-700"
+          "prose prose-sm max-w-none dark:prose-invert",
+          message.isError && "text-red-700 dark:text-red-400"
         )}>
-          <p className="whitespace-pre-wrap">{message.content}</p>
+          <div className="whitespace-pre-wrap text-gray-800 dark:text-gray-200 leading-relaxed">
+            {message.content}
+          </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center space-x-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center space-x-1 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={copyToClipboard}
-            className="p-1 hover:bg-gray-200 rounded transition-colors"
-            title="Copier le message"
+            className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            title="Copy message"
           >
-            <Copy className="w-3 h-3 text-gray-500" />
+            <Copy className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           </button>
+          
+          {message.role === 'assistant' && !message.isError && (
+            <>
+              <button
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Good response"
+              >
+                <ThumbsUp className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              </button>
+              <button
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Bad response"
+              >
+                <ThumbsDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              </button>
+              <button
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Regenerate response"
+              >
+                <RotateCcw className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
